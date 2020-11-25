@@ -5,7 +5,7 @@ public class Main {
     public static void main(String[] args) {
 	// write your code here
         GenerateGraph graph = new GenerateGraph();
-        float[][] matrix;
+        double[][] matrix;
         matrix = graph.GenerateRandomCostMatrix(5, 100);
         graph.PrintMatrix(5, matrix);
 
@@ -19,6 +19,6 @@ public class Main {
 
         FindShortPath findShortPath = new FindShortPath();
         TSPSolution solution = new TSPSolution();
-        solution = findShortPath.BruteForce(5, matrix);
+        solution = findShortPath.BruteForce(0, 0, 5, matrix);
     }
 }

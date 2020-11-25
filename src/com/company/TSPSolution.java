@@ -5,11 +5,13 @@ import java.util.List;
 
 public class TSPSolution {
 
-    TSPSolution(){
+    public double cost;
+    public List<Integer> path;
+
+    public TSPSolution(){
         cost = 0;
         path = new ArrayList<Integer>();
     }
-    float cost;
-    List<Integer> path;
+
 
 }

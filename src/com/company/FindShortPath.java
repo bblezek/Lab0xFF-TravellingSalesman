@@ -4,19 +4,58 @@ import java.util.List;
 
 public class FindShortPath {
 
+    //Greedy algorithm - takes shortest path from start node, then shortest path from next node, etc.
+    public TSPSolution Greedy(int start, int end, int vertices, double[][] edgeCosts){
+        TSPSolution solution = new TSPSolution();
+        //Stores whether we have already "visited" the vertex before
+        Boolean[] vertexVisited = new Boolean[vertices];
+        int vertex, src, dest, nextVertex;
+        double leastCost;
+
+        //Filling vertex visited array with "false"
+        for(vertex = 0; vertex < vertices; vertex++){
+            vertexVisited[vertex] = false;
+        }
+
+        //Start at "start" vertex
+        nextVertex = start;
+        //Loop until we have all vertices
+        while(solution.path.size() < vertices-1){
+            src = nextVertex;
+            vertexVisited[src] = true;
+            leastCost = Double.MAX_VALUE;
+            //Check all vertices to see if we have visited and whether that path is smaller
+            for(dest = 0; dest < vertices; dest++){
+                if(!vertexVisited[dest] && edgeCosts[src][dest] < leastCost){
+                    leastCost = edgeCosts[src][dest];
+                    nextVertex = dest;
+                }
+            }
+
+            //Add vertex with smallest path from source vertex to solution
+            solution.path.add(nextVertex);
+            vertexVisited[nextVertex] = true;
+            solution.cost = solution.cost + leastCost;
+        }
+
+        //Add cost from last vertex to end to total cost
+        solution.cost = solution.cost + edgeCosts[nextVertex][end];
+        return solution;
+    }
+
     //This function calls the helper function
     //Asks for path from 0 to 0, passing in a set of vertices
-    TSPSolution BruteForce(int vertices, float[][] edgeCosts){
+    public TSPSolution BruteForce(int start, int end, int vertices, double[][] edgeCosts){
         int[] toVisit = new int[vertices-1];
         for(int x = 0; x < vertices-1; x++){
             toVisit[x] = x + 1;
         }
-        TSPSolution solution = RecursiveBruteForce(0, 0, toVisit, edgeCosts);
+        TSPSolution solution = RecursiveBruteForce(start, end, toVisit, edgeCosts);
         return solution;
     }
 
     //"Helper" recursive brute force algorithm
-    TSPSolution RecursiveBruteForce(int start, int end, int[] toVisit, float[][] edgeCosts){
+    TSPSolution RecursiveBruteForce(int start, int end, int[] toVisit, double[][] edgeCosts){
         TSPSolution solution = new TSPSolution();
         int[] verticesLeft = new int[toVisit.length-1];
 
