@@ -5,7 +5,7 @@ import java.util.*;
 public class GenerateGraph {
 
     //Generates a simple random cost matrix given number of vertices
-    double[][] GenerateRandomCostMatrix(int vertices, double maxCost){
+    public double[][] GenerateRandomCostMatrix(int vertices, double maxCost){
         double[][] costMatrix = new double[vertices][vertices];
         Random rd = new Random();
         double cost;
@@ -26,7 +26,7 @@ public class GenerateGraph {
 
     //Generates random coordinates for a given number of vertices in a plane
     //Then creates random costs for vertices
-    double[][] GenerateRandomEuclideanCostMatrix(int vertices, int maxX, int maxY){
+    public double[][] GenerateRandomEuclideanCostMatrix(int vertices, int maxX, int maxY){
         double[][] costMatrix = new double[vertices][vertices];
         double[][] coordinates = new double[vertices][2];
         Random rand = new Random();
