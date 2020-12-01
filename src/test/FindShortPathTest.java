@@ -100,7 +100,7 @@ public class FindShortPathTest {
     }
 
     @Test
-    public void compareExact(){
+    public void compareExactTest(){
         GenerateGraph graph = new GenerateGraph();
         FindShortPath findShortPath = new FindShortPath();
         TSPSolution bruteSolution = new TSPSolution();
@@ -117,4 +117,17 @@ public class FindShortPathTest {
         }
     }
 
+    @Test
+    public void testAntColony(){
+        GenerateGraph graph = new GenerateGraph();
+        FindShortPath findShortPath = new FindShortPath();
+        TSPSolution solution = new TSPSolution();
+        double[][] costMatrix;
+        double radius = 100;
+        for(int N = 5; N < 55; N=N+5){
+            costMatrix = graph.GenerateRandomCircularGraphCostMatrix(N, radius);
+            solution = findShortPath.AntColony(N, costMatrix, 20, .9, .1, 3);
+            Assert.assertEquals(N*costMatrix[0][1], solution.cost, .0001);
+        }
+    }
 }
