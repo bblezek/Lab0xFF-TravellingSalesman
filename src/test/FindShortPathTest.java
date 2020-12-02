@@ -99,6 +99,7 @@ public class FindShortPathTest {
         }
     }
 
+    //Compare results from brute force and dynamic programming algorithms
     @Test
     public void compareExactTest(){
         GenerateGraph graph = new GenerateGraph();
