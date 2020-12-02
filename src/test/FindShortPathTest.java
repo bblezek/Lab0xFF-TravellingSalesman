@@ -124,10 +124,15 @@ public class FindShortPathTest {
         TSPSolution solution = new TSPSolution();
         double[][] costMatrix;
         double radius = 100;
-        for(int N = 5; N < 55; N=N+5){
+        for(int N = 5; N < 40; N=N+5){
             costMatrix = graph.GenerateRandomCircularGraphCostMatrix(N, radius);
-            solution = findShortPath.AntColony(N, costMatrix, 20, .9, .1, 3);
-            Assert.assertEquals(N*costMatrix[0][1], solution.cost, .0001);
+            System.out.printf("Doing %d vertex matrix \n", N);
+            solution = findShortPath.AntColony(N, costMatrix, 50, .45, .99, 100);
+            System.out.printf("Actual: %.2f \n", solution.cost);
+            System.out.printf("Expected: %.2f \n", N*costMatrix[0][1]);
+            System.out.printf("%s \n", solution.path.toString());
+            Assert.assertEquals(N*costMatrix[0][1], solution.cost, .01);
         }
     }
+
 }

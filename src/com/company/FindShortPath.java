@@ -213,31 +213,39 @@ public class FindShortPath {
         //Setting initial attractiveness so that attraction function returns something other than 0
         for(r = 0; r < N; r++){
             for(c = 0; c < N; c++){
-                pheroMatrix[r][c] = (double) edgeCost[r][c]/pherFactor;
+                if(r!= c) {
+                    pheroMatrix[r][c] = 1 / edgeCost[r][c];
+                }
             }
         }
 
         //Loops until we get the same path several times in a row
         while (unchangedTimeSteps < maxUnchangedTimeSteps) {
+            //Clear new phero array
+            for (r = 0; r < N; r++) {
+                for (c = 0; c < N; c++) {
+                    newPheroMatrix[r][c] = 0;
+                }
+            }
+
             //Loop through each ant at each time step
             for (int ant = 0; ant < M; ant++) {
                 //Resetting path cost to 0 and setting first stop in path to home node (0)
                 pathCost = 0;
+                //First step in path is home node
                 path[0] = 0;
-                totalA = 0;
 
-                //Clear new phero matrix and reset curAntVisited array
+                //Reset curAntVisited array
                 for (r = 0; r < N; r++) {
                     curAntVisited[r] = false;
-                    for (c = 0; c < N; c++) {
-                        newPheroMatrix[r][c] = 0;
-                    }
                 }
 
                 //We visited node 0
                 curAntVisited[0] = true;
-                //Loop through each node
+
+                //Perform N-1 steps
                 for (step = 1; step < N; step++) {
+                    //Current node is k
                     k = path[step - 1];
                     totalA = 0;
                     //Accumulating total attraction for all possible paths
@@ -250,8 +258,10 @@ public class FindShortPath {
                     }
                     Q = rand.nextDouble();
                     cumProb = 0;
+                    //Selecting edge randomly
                     for (h = 0; h < N; h++) {
                         if (curAntVisited[h] == false && h != k) {
+                            //Calculate probability of selecting this edge out of all available edges
                             edgeSelectionProbability = attraction(k, h, pheroMatrix, edgeCost) / totalA;
                             cumProb = cumProb + edgeSelectionProbability;
                             //Next node h is found
@@ -260,12 +270,13 @@ public class FindShortPath {
                             }
                         }
                     }
+                    //Add h to path
                     path[step] = h;
                     curAntVisited[h] = true;
                     pathCost = pathCost + edgeCost[k][h];
                 }
 
-                //Adding final step to node
+                //Adding final step to total cost
                 pathCost = pathCost + edgeCost[h][0];
                 //If we found a new "min" solution, put in our solution to return
                 if(pathCost < solution.cost || solution.cost == 0){
@@ -275,6 +286,7 @@ public class FindShortPath {
                     for(int x = 1; x < N; x++){
                         solution.path.add(path[x]);
                     }
+                    //Set to -1 because we will add one at the end of the loop
                     unchangedTimeSteps = -1;
                 }
 
@@ -297,6 +309,7 @@ public class FindShortPath {
             }
             unchangedTimeSteps++;
         }
+
         return solution;
     }
 }
