@@ -81,6 +81,37 @@ public class TimingTable {
         }
     }
 
+    //Heuristic solution quality testing
+    public void generateSolutionQualityTable(){
+        GenerateGraph generateGraph = new GenerateGraph();
+        TSPSolution dynamicSolution, greedySolution, antColonySolution;
+        FindShortPath findShortPath = new FindShortPath();
+        double[][] edgeCosts;
+        double dynTotal, greedyTotal, antTotal;
+        System.out.printf("%10s %10s %10s %10s %10s %10s \n", "Vertices", "Dynamic", "Greedy", "Ant Colony", "SQR for", "SQR for");
+        System.out.printf("%43s %10s %10s \n", "", "Greedy/Dyn", "Ant/Dyn");
+        int runs = 10;
+        for(int N = 4; N < 21; N++){
+            dynTotal = 0;
+            greedyTotal = 0;
+            antTotal = 0;
+            for(int run = 0; run < runs; run++) {
+                edgeCosts = generateGraph.GenerateRandomEuclideanCostMatrix(N, 100, 100);
+                dynamicSolution = findShortPath.DynamicProgramming(0, 0, N, edgeCosts);
+                greedySolution = findShortPath.Greedy(0, 0, N, edgeCosts);
+                antColonySolution = findShortPath.AntColony(N, edgeCosts, 50, .45, .99, 100);
+                dynTotal = dynTotal + dynamicSolution.cost;
+                greedyTotal = greedyTotal + greedySolution.cost;
+                antTotal = antTotal + antColonySolution.cost;
+            }
+            greedyTotal = greedyTotal/runs;
+            antTotal = antTotal/runs;
+            dynTotal = dynTotal/runs;
+            System.out.printf("%10d %10.2f %10.2f %10.2f %10.2f %10.2f \n", N, dynTotal, greedyTotal, antTotal,
+                    greedyTotal/dynTotal, antTotal/dynTotal);
+        }
+    }
+
     //Function to retrieve CPU time
     public static long getCpuTime() {
         ThreadMXBean bean = ManagementFactory.getThreadMXBean();

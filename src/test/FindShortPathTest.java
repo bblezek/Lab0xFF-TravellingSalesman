@@ -21,15 +21,15 @@ public class FindShortPathTest {
         for(int N = 5; N < 70; N=N+5) {
             System.out.printf("Testing greedy algorithm for graph of size %d \n", N);
             //Print vertices around circle and coordinates
-            angle = 2 * Math.PI / N;
+            /*angle = 2 * Math.PI / N;
             System.out.printf("%10s %10s %10s \n", "Vertex", "X", "Y");
             for (int vertex = 0; vertex < N; vertex++) {
                 System.out.printf("%10d %10.2f %10.2f \n", vertex, radius*Math.cos(angle*vertex),
                         radius * Math.sin(angle * vertex));
-            }
+            }*/
             //Print cost matrix
             costMatrix = graph.GenerateRandomCircularGraphCostMatrix(N, radius);
-            graph.PrintMatrix(N, costMatrix);
+            //graph.PrintMatrix(N, costMatrix);
 
             //Calculate solution and print
             solution = findShortPath.Greedy(0, 0, N, costMatrix);
@@ -51,16 +51,16 @@ public class FindShortPathTest {
         for(int N = 3; N < 13; N++) {
             System.out.printf("Testing brute force algorithm for graph of size %d \n", N);
             //Print vertices around circle and coordinates
-            angle = 2 * Math.PI / N;
+            /*angle = 2 * Math.PI / N;
             angle = (double) Math.toRadians(angle);
             System.out.printf("%10s %10s %10s \n", "Vertex", "X", "Y");
             for (int vertex = 0; vertex < N; vertex++) {
                 System.out.printf("%10d %10.2f %10.2f \n", vertex, radius*Math.cos(angle*vertex),
                         radius * Math.sin(angle * vertex));
-            }
+            }*/
             //Print cost matrix
             costMatrix = graph.GenerateRandomCircularGraphCostMatrix(N, radius);
-            graph.PrintMatrix(N, costMatrix);
+            //graph.PrintMatrix(N, costMatrix);
 
             //Calculate solution and print
             solution = findShortPath.BruteForce(0, 0, N, costMatrix);
@@ -83,15 +83,15 @@ public class FindShortPathTest {
         for(int N = 3; N < 15; N++) {
             System.out.printf("Testing dynamic programming algorithm for graph of size %d \n", N);
             //Print vertices around circle and coordinates
-            angle = 2*Math.PI / N;
+            /*angle = 2*Math.PI / N;
             System.out.printf("%10s %10s %10s \n", "Vertex", "X", "Y");
             for (int vertex = 0; vertex < N; vertex++) {
                 System.out.printf("%10d %10.2f %10.2f \n", vertex, radius*Math.cos(angle*vertex),
                         radius * Math.sin(angle * vertex));
-            }
+            }*/
             //Print cost matrix
             costMatrix = graph.GenerateRandomCircularGraphCostMatrix(N, radius);
-            graph.PrintMatrix(N, costMatrix);
+            //graph.PrintMatrix(N, costMatrix);
 
             //Calculate solution and print
             solution = findShortPath.DynamicProgramming(0, 0, N, costMatrix);
@@ -132,15 +132,15 @@ public class FindShortPathTest {
         for(int N = 5; N < 65; N=N+5){
             System.out.printf("Testing ant colony algorithm for graph of size %d \n", N);
             //Print coordinates
-            angle = 2*Math.PI / N;
+            /*angle = 2*Math.PI / N;
             System.out.printf("%10s %10s %10s \n", "Vertex", "X", "Y");
             for (int vertex = 0; vertex < N; vertex++) {
                 System.out.printf("%10d %10.2f %10.2f \n", vertex, radius*Math.cos(angle*vertex),
                         radius * Math.sin(angle * vertex));
-            }
+            }*/
             //Generate and print cost matrix
             costMatrix = graph.GenerateRandomCircularGraphCostMatrix(N, radius);
-            graph.PrintMatrix(N, costMatrix);
+            //graph.PrintMatrix(N, costMatrix);
 
             System.out.printf("Doing %d vertex matrix \n", N);
             solution = findShortPath.AntColony(N, costMatrix, 50, .45, .99, 100);
