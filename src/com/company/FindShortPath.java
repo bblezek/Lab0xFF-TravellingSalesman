@@ -308,6 +308,7 @@ public class FindShortPath {
                 }
             }
             unchangedTimeSteps++;
+            solution.steps++;
         }
 
         return solution;

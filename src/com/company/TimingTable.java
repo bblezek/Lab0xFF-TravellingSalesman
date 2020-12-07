@@ -6,11 +6,12 @@ import java.lang.management.ThreadMXBean;
 public class TimingTable {
 
     public void generateExactAlgorithmTable() {
-        long beforeTime, afterTime, time, lastBruteTime, lastDynamicTime, lastGreedyTime, lastAntTime;
+        long beforeTime, afterTime, time, lastBruteTime, lastDynamicTime, lastGreedyTime, lastAntTime, antTimePerStep;
         lastBruteTime = 0;
         lastDynamicTime = 0;
         lastGreedyTime = 0;
         lastAntTime = 0;
+        antTimePerStep = 0;
         GenerateGraph graph = new GenerateGraph();
         FindShortPath findShortPath = new FindShortPath();
         double[][] edgeCosts;
@@ -20,8 +21,9 @@ public class TimingTable {
                 "Time", "Actual Ratio", "+1 Ratio", "Time", "Actual Ratio", "+1 Ratio", "Time", "Actual Ratio", "+1 Ratio");
         System.out.printf("\n");
 
-        for (int N = 4; N < 30; N++) {
+        for (int N = 4; N < 25; N++) {
             edgeCosts = graph.GenerateRandomCostMatrix(N, 100);
+            System.out.printf("%10d ", N);
             //Brute force quits after running for a while
             if (lastBruteTime < 180000000000L) {
                 beforeTime = getCpuTime();
@@ -29,27 +31,31 @@ public class TimingTable {
                 afterTime = getCpuTime();
                 time = afterTime - beforeTime;
                 if (N != 4) {
-                    System.out.printf("%10d %15d %15.2f %15s ", N, time, (float) time / lastBruteTime, "");
+                    //Time complexity is (N-1)!
+                    System.out.printf("%15d %15.2f %15.2f ", time, (float) time / lastBruteTime,
+                            (float) factorial(N-1)/factorial(N-2));
                 } else {
-                    System.out.printf("%10d %15d %15s %15s ", N, time, "na", "na");
+                    System.out.printf("%15d %15s %15s ", time, "na", "na");
                 }
                 lastBruteTime = time;
             } else {
-                System.out.printf("%58s ", "");
+                System.out.printf("%48s", "");
             }
 
-            //Dynamic portion of the table
-            beforeTime = getCpuTime();
-            solution = findShortPath.DynamicProgramming(0, 0, N, edgeCosts);
-            afterTime = getCpuTime();
-            time = afterTime - beforeTime;
+                //Dynamic portion of the table
+                beforeTime = getCpuTime();
+                solution = findShortPath.DynamicProgramming(0, 0, N, edgeCosts);
+                afterTime = getCpuTime();
+                time = afterTime - beforeTime;
 
-            if (N != 4) {
-                System.out.printf("%15d %15.2f %15s ", time, (float) time / lastDynamicTime, "");
-            } else {
-                System.out.printf("%15d %15s %15s ", time, "na", "na");
-            }
-            lastDynamicTime = time;
+                if (N != 4) {
+                    //Time complexity is 2^N * N^2
+                    System.out.printf("%15d %15.2f %15.2f ", time, (float) time / lastDynamicTime,
+                            (float) (Math.pow(2, N) * Math.pow(N, 2)) / (Math.pow(2, N - 1) * Math.pow(N - 1, 2)));
+                } else {
+                    System.out.printf("%15d %15s %15s ", time, "na", "na");
+                }
+                lastDynamicTime = time;
 
             //Greedy portion of the table
             beforeTime = getCpuTime();
@@ -58,7 +64,8 @@ public class TimingTable {
             time = afterTime - beforeTime;
 
             if (N != 4) {
-                System.out.printf("%15d %15.2f %15s ", time, (float) time / lastGreedyTime, "");
+                System.out.printf("%15d %15.2f %15.2f ", time, (float) time / lastGreedyTime,
+                        Math.pow(N, 2)/Math.pow(N-1, 2));
             } else {
                 System.out.printf("%15d %15s %15s ", time, "na", "na");
             }
@@ -71,13 +78,62 @@ public class TimingTable {
             time = afterTime - beforeTime;
 
             if (N != 4) {
-                System.out.printf("%15d %15.2f %15s ", time, (float) time / lastAntTime, "");
+                System.out.printf("%15d %15.2f %15.2f ", time, (float) time / lastAntTime,
+                        (float) (time/solution.steps)/antTimePerStep);
             } else {
                 System.out.printf("%15d %15s %15s ", time, "na", "na");
             }
             lastAntTime = time;
+            antTimePerStep = time/solution.steps;
             System.out.printf("\n");
 
+        }
+    }
+
+    //Generates table for heuristic algorithms
+    public void generateHeuristicTable(){
+        long beforeTime, afterTime, time, lastGreedyTime, lastAntTime, antTimePerStep = 0;
+        lastGreedyTime = 0;
+        lastAntTime = 0;
+        TSPSolution solution;
+        FindShortPath findShortPath = new FindShortPath();
+        GenerateGraph graph = new GenerateGraph();
+        double[][] edgeCosts;
+        System.out.printf("%10s %48s %48s\n", "", "Greedy", "Ant Colony");
+        System.out.printf("%10s %15s %15s %15s %15s %15s %15s ", "Vertices", "Time", "Actual Ratio", "+1 Ratio",
+                "Time", "Actual Ratio", "+1 Ratio");
+        System.out.printf("\n");
+        for(int N = 50; N < 10000000; N=N*2){
+            edgeCosts = graph.GenerateRandomCostMatrix(N, 100);
+            //Greedy portion of the table
+            beforeTime = getCpuTime();
+            solution = findShortPath.Greedy(0, 0, N, edgeCosts);
+            afterTime = getCpuTime();
+            time = afterTime - beforeTime;
+
+            if (N != 4) {
+                System.out.printf("%15d %15.2f %15.2f ", time, (float) time / lastGreedyTime,
+                        Math.pow(N, 2)/Math.pow(N-1, 2));
+            } else {
+                System.out.printf("%15d %15s %15s ", time, "na", "na");
+            }
+            lastGreedyTime = time;
+
+            //Ant Colony portion of the table
+            beforeTime = getCpuTime();
+            solution = findShortPath.AntColony(N, edgeCosts, 50, .45, .99, 100);
+            afterTime = getCpuTime();
+            time = afterTime - beforeTime;
+
+            if (N != 4) {
+                System.out.printf("%15d %15.2f %15.2f ", time, (float) time / lastAntTime,
+                        (float) (time/solution.steps)/antTimePerStep);
+            } else {
+                System.out.printf("%15d %15s %15s ", time, "na", "na");
+            }
+            lastAntTime = time;
+            antTimePerStep = time/solution.steps;
+            System.out.printf("\n");
         }
     }
 
