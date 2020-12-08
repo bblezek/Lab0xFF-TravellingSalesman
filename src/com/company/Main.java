@@ -6,5 +6,8 @@ public class Main {
 	// write your code here
         TimingTable table = new TimingTable();
         table.generateExactAlgorithmTable();
+        table.generateHeuristicTable();
+        table.generateSolutionQualityTable();
+        table.generateAntParameterTable();
     }
 }
